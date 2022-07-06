@@ -1,0 +1,16 @@
+Stworzc projekt mavenowy z testami jednostkowymi w ktorym bylo by poruszone nastepujace zagadnienie.
+"Czesto jezdzicie z dziewczyną (lub chłopakiem?) na weekend, wybieracie zawsze te miejsca, w których jest najlepsza pogoda,
+w tym celu korzystacie z API pogodowego
+do ktorego macie juz interfejs: WeatherProvider.
+Ten Interfejs ma jedną metodę, która pobiera 3 argumenty: Data od, Data do, lista miast (stringow)
+Ta metoda zwraca Listę obiektow WeatherInfo. Kazdy WeatherInfo zawiera inforcję o: dacie, mieście, temperaturze, rodzaju pogody
+(SUNNY, RAINY, CLOUDY, SNOWY)
+Waszym zadaniem jest napisanie serwisu który będzie korzystał z tego inferfejsu aby pobrać prognozy pogody dla danych miast w podanym przedziale dat.
+
+Metoda serwisowa ma pobierać: date od, date do, liste miast (Stringow) i ma określić gdzie najlepiej jechać w danym przedziale dat
+(jedziemy dam gdzie jest najlepsza pogoda)
+pogoda jest sumą punktów ważonych obliczanych na podstawie wzoru:
+Temperatura * Rodzaj pogody, gdzie np: SUNNY ma punktow 30, RAINY ma 5, CLOUDY ma 10, SNOWY ma 15.
+miasto ktore ma najwiecej punktow pogodowych wygrywa.
+semantyka metody serwisowej:
+public String whereWillBeTheBestWeather(LocalDate from, LocalDate to, List<String> cities)"
