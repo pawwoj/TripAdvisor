@@ -1,14 +1,13 @@
 package application;
 
-import com.weatherapi.api.WeatherAPIClient;
-import com.weatherapi.api.models.Day;
-import com.weatherapi.api.models.ForecastJsonResponse;
-import com.weatherapi.api.models.Forecastday;
-import exceptions.InvalidCityNameException;
+import com.fasterxml.jackson.databind.JsonNode;
 import interfaces.WeatherProvider;
+import weatherapi.model.CityWeatherForecast;
 import model.WeatherInfo;
 import service.Service;
+import weatherapi.service.WeatherApiService;
 
+import java.net.URL;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,31 +17,22 @@ import static java.time.temporal.ChronoUnit.DAYS;
 public class App {
 
     public void run(LocalDate from, LocalDate to, List<String> cities) {
-
+        WeatherApiService wApiService = new WeatherApiService();
         WeatherProvider weatherProvider;
 
         weatherProvider = (fromI, toI, citiesI) -> {
             List<WeatherInfo> weatherInfos = new ArrayList<>();
-            ForecastJsonResponse forecastJsonResponse;
-            int daysRange = (int) DAYS.between(LocalDate.now(), to) + 1;
+            List<CityWeatherForecast> cityWeatherForecasts = new ArrayList<>();
             int daysBetween = (int) DAYS.between(from, to) + 1;
             for (String city : cities) {
-                try {
-                    forecastJsonResponse = new WeatherAPIClient().getAPIs()
-                            .getForecastWeather(city, daysRange, null, null, 0, null);
-                } catch (Throwable e) {
-                    throw new InvalidCityNameException(e.getMessage());
-                }
-                List<Forecastday> forecastdays = forecastJsonResponse.getForecast().getForecastday();
-                Day day;
-                for (int i = daysRange - daysBetween; i < daysRange; i++) {
-                    day = forecastdays.get(i).getDay();
-                    weatherInfos
-                            .add(new WeatherInfo(
-                                    LocalDate.parse(forecastdays.get(i).getDate()),
-                                    city,
-                                    day.getAvgtempC(),
-                                    Service.parseCondition(day.getCondition().getText())));
+                URL url = wApiService.getUrlFromString(wApiService.getLinkForCity(city));
+                JsonNode jsonNode = wApiService.getSourceJsonFromURL(url);
+                cityWeatherForecasts.add(wApiService.buildCityWeatherForecastFromJsonNode(jsonNode));
+            }
+            for (CityWeatherForecast cityWeatherForecast : cityWeatherForecasts) {
+                for (int i = 0; i < daysBetween; i++) {
+                    weatherInfos.add(wApiService
+                            .getWeatherInfoFromCityWeatherForecast(cityWeatherForecast, from.plusDays(i)));
                 }
             }
             return weatherInfos;

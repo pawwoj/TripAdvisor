@@ -5,7 +5,7 @@ import exceptions.InvalidCitiesListException;
 import exceptions.InvalidCityNameException;
 import exceptions.InvalidDataRangeException;
 import interfaces.WeatherProvider;
-import model.Condition;
+import weatherapi.model.Condition;
 import model.WeatherInfo;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.Before;
@@ -51,7 +51,7 @@ public class ServiceTest {
         softA.assertAll();
     }
 
-    @Test (expected = DataOutOfRangeException.class)
+    @Test(expected = DataOutOfRangeException.class)
     public void shouldThrowDataOutOfRangeExceptionWhenDateToIsFurtherThen7Days() {
         LocalDate d1 = LocalDate.now().plusDays(2);
         LocalDate d2 = LocalDate.now().plusDays(7);
@@ -60,7 +60,7 @@ public class ServiceTest {
         service.whereWillBeTheBestWeather(d1, d2, list);
     }
 
-    @Test (expected = InvalidDataRangeException.class)
+    @Test(expected = InvalidDataRangeException.class)
     public void shouldThrowInvalidDataRangeExceptionWhenToIsBeforeFrom() {
         LocalDate d1 = LocalDate.now().plusDays(4);
         LocalDate d2 = LocalDate.now().plusDays(2);
@@ -69,7 +69,7 @@ public class ServiceTest {
         service.whereWillBeTheBestWeather(d1, d2, list);
     }
 
-    @Test (expected = InvalidCitiesListException.class)
+    @Test(expected = InvalidCitiesListException.class)
     public void shouldThrowInvalidCitiesListExceptionWhenCitiesListIsNull() {
         LocalDate d1 = LocalDate.now().plusDays(4);
         LocalDate d2 = LocalDate.now().plusDays(2);
@@ -78,7 +78,7 @@ public class ServiceTest {
         service.whereWillBeTheBestWeather(d1, d2, list);
     }
 
-    @Test (expected = InvalidCityNameException.class)
+    @Test(expected = InvalidCityNameException.class)
     public void shouldThrowInvalidCityNameExceptionWhenCitiesListContainNull() {
         LocalDate d1 = LocalDate.now().plusDays(4);
         LocalDate d2 = LocalDate.now().plusDays(5);
@@ -87,7 +87,7 @@ public class ServiceTest {
         service.whereWillBeTheBestWeather(d1, d2, list);
     }
 
-    @Test (expected = NoSuchElementException.class)
+    @Test(expected = NoSuchElementException.class)
     public void shouldThrowInvalidCityNameExceptionWhenCitiesListContainUnknown() {
         LocalDate d1 = LocalDate.now().plusDays(4);
         LocalDate d2 = LocalDate.now().plusDays(5);
@@ -113,9 +113,9 @@ public class ServiceTest {
         WeatherInfo wI2 = new WeatherInfo(LocalDate.now(), "Warsaw", 2.0, Condition.HEAVY_SNOW);
 
         SoftAssertions softA = new SoftAssertions();
-        softA.assertThat(service.sumScore(List.of(wI1,wI2))).isNotNull();
-        softA.assertThat(service.sumScore(List.of(wI1,wI2))).isInstanceOf(Double.class);
-        softA.assertThat(service.sumScore(List.of(wI1,wI2))).isEqualTo(130.0);
+        softA.assertThat(service.sumScore(List.of(wI1, wI2))).isNotNull();
+        softA.assertThat(service.sumScore(List.of(wI1, wI2))).isInstanceOf(Double.class);
+        softA.assertThat(service.sumScore(List.of(wI1, wI2))).isEqualTo(130.0);
         softA.assertAll();
     }
 
@@ -129,9 +129,8 @@ public class ServiceTest {
         SoftAssertions softA = new SoftAssertions();
         softA.assertThat(service.getMapCityWeatherInfo(weatherInfos)).isNotNull();
         softA.assertThat(service.getMapCityWeatherInfo(weatherInfos)).isInstanceOf(Map.class);
-        softA.assertThat(service.getMapCityWeatherInfo(weatherInfos).get("Warsaw")).isEqualTo(List.of(wI1,wI2));
-        softA.assertThat(service.getMapCityWeatherInfo(weatherInfos).get("London")).isEqualTo(List.of(wI3,wI4));
+        softA.assertThat(service.getMapCityWeatherInfo(weatherInfos).get("Warsaw")).isEqualTo(List.of(wI1, wI2));
+        softA.assertThat(service.getMapCityWeatherInfo(weatherInfos).get("London")).isEqualTo(List.of(wI3, wI4));
         softA.assertAll();
     }
-
 }

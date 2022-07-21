@@ -1,25 +1,21 @@
 package service;
 
-import com.weatherapi.api.WeatherAPIClient;
-import com.weatherapi.api.models.Day;
-import com.weatherapi.api.models.ForecastJsonResponse;
-import com.weatherapi.api.models.Forecastday;
 import exceptions.DataOutOfRangeException;
 import exceptions.InvalidCitiesListException;
 import exceptions.InvalidCityNameException;
 import exceptions.InvalidDataRangeException;
 import interfaces.WeatherProvider;
-import model.Condition;
+import weatherapi.model.Condition;
 import model.WeatherInfo;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.time.temporal.ChronoUnit.DAYS;
+
 
 public class Service {
 
@@ -32,8 +28,9 @@ public class Service {
     public String whereWillBeTheBestWeather(LocalDate from, LocalDate to, List<String> cities) {
         checkCities(cities);
         checkDaysRange(to);
-        checkDaysBetween(from,to);
+        checkDaysBetween(from, to);
         List<WeatherInfo> weatherInfos = weatherProvider.getWeatherInfos(from, to, cities);
+        System.out.println(weatherInfos);
         Map<String, List<WeatherInfo>> map = getMapCityWeatherInfo(weatherInfos);
 
         String city = map
@@ -60,7 +57,6 @@ public class Service {
     public double singleWeatherScore(WeatherInfo weatherInfo) {
         return weatherInfo.getTemperature() * weatherInfo.getCondition().getMultiplier();
     }
-
 
 
     public void checkCities(List<String> cities) {
@@ -90,5 +86,4 @@ public class Service {
         String s = text.toUpperCase().replace(" ", "_");
         return Condition.valueOf(s);
     }
-
 }
